@@ -12,6 +12,9 @@ import AddExpense from './components/Expense/AddExpense';
 import EditExpense from './components/Expense/EditExpense';
 import BudgetManagement from './components/Budget/BudgetManagement';
 import SavingsCalculation from './components/Savings/SavingsCalculation';
+import SavingsIntelligence from './components/Savings/SavingsIntelligence';
+import CategoriesManagement from './components/Categories/CategoriesManagement';
+import ReportsAnalytics from './components/Report/ReportsAnalytics';
 import './App.css';
 
 function App() {
@@ -32,6 +35,8 @@ function App() {
               <Route path="/expenses/edit/:id" element={<EditExpense />} />
               <Route path="/budget" element={<BudgetManagement />} />
               <Route path="/savings" element={<SavingsCalculation />} />
+              <Route path="/categories" element={<CategoriesManagement />} />
+              <Route path="/reports" element={<ReportsAnalytics />} />
             </Routes>
           </main>
         </div>

@@ -1,0 +1,386 @@
+/* src/styles/ReportsAnalytics.css */
+.reports-analytics-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 2px solid #FF6384;
+  padding-bottom: 0.5rem;
+}
+
+.report-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.report-period-selector,
+.report-type-selector {
+  display: flex;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.period-btn,
+.type-btn {
+  padding: 0.7rem 1.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #6c757d;
+}
+
+.period-btn:hover,
+.type-btn:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.period-btn.active,
+.type-btn.active {
+  background-color: #FF6384;
+  color: white;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.summary-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  padding: 1.2rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #495057;
+}
+
+.card-body {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.big-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.change {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.change.positive {
+  color: #28a745;
+}
+
+.change.negative {
+  color: #dc3545;
+}
+
+.change.neutral {
+  color: #6c757d;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.chart-section {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.chart-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+  color: #343a40;
+}
+
+.bar-chart-container {
+  display: flex;
+  justify-content: space-around;
+  height: 250px;
+  align-items: flex-end;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 60px;
+}
+
+.bar-container {
+  width: 40px;
+  height: 200px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 5px;
+  height: 0;
+  transition: height 1s ease;
+}
+
+.bar-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.line-chart-container {
+  height: 300px;
+  position: relative;
+}
+
+.line-chart {
+  width: 100%;
+  height: 250px;
+  overflow: visible;
+}
+
+.chart-x-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding: 0 2.5%;
+}
+
+.chart-x-labels span {
+  font-size: 0.9rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+.reports-section {
+  margin-bottom: 3rem;
+}
+
+.reports-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #343a40;
+}
+
+.reports-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.report-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.report-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.report-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.report-card h3 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  color: #343a40;
+}
+
+.report-card p {
+  margin: 0 0 1.5rem;
+  color: #6c757d;
+  line-height: 1.5;
+  height: 3em;
+}
+
+.report-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.report-action-btn {
+  padding: 0.6rem 1.2rem;
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.report-action-btn:hover {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+.custom-report-section {
+  margin-bottom: 2rem;
+}
+
+.custom-report-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #343a40;
+}
+
+.custom-report-form {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.form-group select[multiple] {
+  height: 150px;
+}
+
+.format-options {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.format-options label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.format-options input {
+  margin-right: 0.5rem;
+}
+
+.generate-report-btn {
+  padding: 0.8rem 1.5rem;
+  background-color: #FF6384;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.generate-report-btn:hover {
+  background-color: #FF4570;
+}
+
+@media (max-width: 992px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-controls {
+    flex-direction: column;
+  }
+  
+  .bar-chart-container {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 1rem;
+  }
+  
+  .bar-item {
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+  
+  .chart-x-labels {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .chart-x-labels span {
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+}

@@ -12,6 +12,9 @@ import {
 import { FaMoneyBillWave,FaPiggyBank  } from "react-icons/fa";
 import anime from 'animejs/lib/anime.es.js';
 import './Sidebar.css';
+import { MdOutlineCategory } from "react-icons/md";
+import { TbReportAnalytics } from "react-icons/tb";
+
 
 const Sidebar = () => {
   const sidebarRef = useRef(null);
@@ -74,6 +77,14 @@ const Sidebar = () => {
         <Link to="/savings" className="menu-item" ref={addToLinksRef}>
           <FaPiggyBank className="menu-icon"/>
           <span>Savings</span>
+        </Link>
+        <Link to="/categories" className="menu-item" ref={addToLinksRef}>
+          <MdOutlineCategory className="menu-icon" />
+          <span>Categories</span>
+        </Link>
+        <Link to="/reports" className="menu-item" ref={addToLinksRef}>
+          <TbReportAnalytics className="menu-icon"/>
+          <span>Reports</span>
         </Link>
       </div>
       <div className="sidebar-footer">
