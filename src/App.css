@@ -43,7 +43,23 @@ body {
   margin-left: 250px;
   transition: var(--transition);
 }
-
+#menuButt{
+  display: none;
+}
+@media (max-width: 768px) {
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    margin-left: 0px;
+    transition: var(--transition);
+  }
+  #menuButt{
+    display:block;
+    padding: 10px;
+    z-index: 999;
+    cursor: pointer;
+  }
+}
 .card {
   background: white;
   border-radius: var(--border-radius);
