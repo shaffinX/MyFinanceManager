@@ -9,6 +9,7 @@ import {
   RiSettings4Line,
   RiAddCircleLine
 } from 'react-icons/ri';
+import { FaMoneyBillWave,FaPiggyBank  } from "react-icons/fa";
 import anime from 'animejs/lib/anime.es.js';
 import './Sidebar.css';
 
@@ -65,6 +66,14 @@ const Sidebar = () => {
         <Link to="/settings" className="menu-item" ref={addToLinksRef}>
           <RiSettings4Line className="menu-icon" />
           <span>Settings</span>
+        </Link>
+        <Link to="/budget" className="menu-item" ref={addToLinksRef}>
+          <FaMoneyBillWave className="menu-icon" />
+          <span>Budget</span>
+        </Link>
+        <Link to="/savings" className="menu-item" ref={addToLinksRef}>
+          <FaPiggyBank className="menu-icon"/>
+          <span>Savings</span>
         </Link>
       </div>
       <div className="sidebar-footer">

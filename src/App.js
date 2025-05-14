@@ -10,6 +10,8 @@ import Profile from './components/Profile/Profile';
 import ExpenseList from './components/Expense/ExpenseList';
 import AddExpense from './components/Expense/AddExpense';
 import EditExpense from './components/Expense/EditExpense';
+import BudgetManagement from './components/Budget/BudgetManagement';
+import SavingsCalculation from './components/Savings/SavingsCalculation';
 import './App.css';
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
               <Route path="/expenses" element={<ExpenseList />} />
               <Route path="/expenses/add" element={<AddExpense />} />
               <Route path="/expenses/edit/:id" element={<EditExpense />} />
+              <Route path="/budget" element={<BudgetManagement />} />
+              <Route path="/savings" element={<SavingsCalculation />} />
             </Routes>
           </main>
         </div>
