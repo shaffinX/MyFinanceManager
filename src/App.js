@@ -12,9 +12,11 @@ import AddExpense from './components/Expense/AddExpense';
 import EditExpense from './components/Expense/EditExpense';
 import BudgetManagement from './components/Budget/BudgetManagement';
 import SavingsCalculation from './components/Savings/SavingsCalculation';
-import SavingsIntelligence from './components/Savings/SavingsIntelligence';
 import CategoriesManagement from './components/Categories/CategoriesManagement';
 import ReportsAnalytics from './components/Report/ReportsAnalytics';
+import TipsAndArticles from './components/Tips/TipsAndArticles';
+import DailyDressingTrends from './components/Dress/DailyDressingTrends'
+
 import './App.css';
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
               <Route path="/savings" element={<SavingsCalculation />} />
               <Route path="/categories" element={<CategoriesManagement />} />
               <Route path="/reports" element={<ReportsAnalytics />} />
+              <Route path="/tips-articles" element={<TipsAndArticles />} />
+              <Route path="/dressing-trends" element={<DailyDressingTrends />} />
             </Routes>
           </main>
         </div>

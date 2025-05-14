@@ -7,14 +7,14 @@ import {
   RiUser3Line,
   RiLogoutBoxLine,
   RiSettings4Line,
-  RiAddCircleLine
+  RiAddCircleLine,
+  RiArchiveDrawerLine
 } from 'react-icons/ri';
 import { FaMoneyBillWave,FaPiggyBank  } from "react-icons/fa";
 import anime from 'animejs/lib/anime.es.js';
 import './Sidebar.css';
-import { MdOutlineCategory } from "react-icons/md";
+import { MdOutlineCategory,MdOutlineTipsAndUpdates  } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
-
 
 const Sidebar = () => {
   const sidebarRef = useRef(null);
@@ -85,6 +85,14 @@ const Sidebar = () => {
         <Link to="/reports" className="menu-item" ref={addToLinksRef}>
           <TbReportAnalytics className="menu-icon"/>
           <span>Reports</span>
+        </Link>
+        <Link to="/tips-articles" className="menu-item" ref={addToLinksRef}>
+          <MdOutlineTipsAndUpdates  className="menu-icon" />
+          <span>Tips & Articles</span>
+        </Link>
+        <Link to="/dressing-trends" className="menu-item" ref={addToLinksRef}>
+          <RiArchiveDrawerLine className="menu-icon"/>
+          <span>Dressing</span>
         </Link>
       </div>
       <div className="sidebar-footer">
