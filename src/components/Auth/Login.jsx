@@ -1,14 +1,22 @@
 // pages/Login.jsx
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef,useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import anime from 'animejs/lib/anime.es.js';
 import './Auth.css';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const formRef = useRef(null);
   const elementsRef = useRef([]);
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const nav = useNavigate();
+
   useEffect(() => {
+    skipLogin();
     anime({
       targets: formRef.current,
       opacity: [0, 1],
@@ -32,6 +40,59 @@ const Login = () => {
     }
   };
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (email && password) {
+      Cookies.remove('token');
+      Cookies.remove('user_email');
+      axios.post(`${process.env.REACT_APP_API}login`, { email, password })
+        .then((response) => {
+          // Successful login (HTTP 200)
+          Cookies.set('token', response.data.token, { expires: 1 });
+          Cookies.set('user_email', email, { expires: 1 });
+          nav('/');
+        })
+        .catch((error) => {
+          // Handle 401 and other errors
+          if (error.response) {
+            if (error.response.status === 401) {
+              alert('Invalid credentials');
+            } else {
+              alert(`Login failed: ${error.response.statusText}`);
+            }
+          } else {
+            alert('Network error or server not responding');
+          }
+          console.error('Error during login:', error);
+        });
+    } else {
+      alert('Please enter both email and password');
+    }
+  };
+  const skipLogin = async() => {
+    const token = Cookies.get('token');
+
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_API}checkme`, {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          nav('/');
+        }
+      } catch (error) {
+        console.error("Token check failed:", error);
+      }
+  }
+
+
   return (
     <div className="auth-page">
       <div className="auth-container" ref={formRef}>
@@ -39,7 +100,7 @@ const Login = () => {
           <h2 ref={addToElementsRef}>Welcome Back</h2>
           <p ref={addToElementsRef}>Sign in to continue to your account</p>
         </div>
-        <form className="auth-form">
+        <form className="auth-form" onSubmit={handleLogin} ref={formRef}>
           <div className="form-group" ref={addToElementsRef}>
             <label htmlFor="email">Email</label>
             <input 
@@ -47,6 +108,7 @@ const Login = () => {
               id="email" 
               placeholder="Enter your email" 
               required
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="form-group" ref={addToElementsRef}>
@@ -56,6 +118,7 @@ const Login = () => {
               id="password" 
               placeholder="Enter your password" 
               required
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="form-action" ref={addToElementsRef}>

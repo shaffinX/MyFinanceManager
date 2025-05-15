@@ -17,6 +17,7 @@ import { MdOutlineCategory, MdOutlineTipsAndUpdates } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import MediaQuery from 'react-responsive';
 import { TiThMenu } from "react-icons/ti";
+import Cookies from 'js-cookie';
 
 const Sidebar = ({menu}) => {
   const sidebarRef = useRef(null);
@@ -45,6 +46,12 @@ const Sidebar = ({menu}) => {
       linksRef.current.push(el);
     }
   };
+
+  const handleLogout = () => {
+    Cookies.remove('token');
+    Cookies.remove('user_email');
+    window.location.href = '/login';
+  }
 
   return (
     <React.Fragment>
@@ -100,7 +107,7 @@ const Sidebar = ({menu}) => {
             </Link>
           </div>
           <div className="sidebar-footer">
-            <Link to="/logout" className="menu-item" ref={addToLinksRef}>
+            <Link to="/logout" className="menu-item" ref={addToLinksRef} onClick={handleLogout}>
               <RiLogoutBoxLine className="menu-icon" />
               <span>Logout</span>
             </Link>
@@ -159,7 +166,7 @@ const Sidebar = ({menu}) => {
             </Link>
           </div>
           <div className="sidebar-footer">
-            <Link to="/logout" className="menu-item" ref={addToLinksRef}>
+            <Link to="/logout" className="menu-item" ref={addToLinksRef} onClick={handleLogout}>
               <RiLogoutBoxLine className="menu-icon" />
               <span>Logout</span>
             </Link>

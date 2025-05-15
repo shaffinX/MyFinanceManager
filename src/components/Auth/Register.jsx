@@ -1,13 +1,18 @@
 // pages/Register.jsx
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef,useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import anime from 'animejs/lib/anime.es.js';
+import axios from 'axios';
 import './Auth.css';
 
 const Register = () => {
   const formRef = useRef(null);
   const elementsRef = useRef([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
+  const nav = useNavigate();
   useEffect(() => {
     anime({
       targets: formRef.current,
@@ -32,6 +37,31 @@ const Register = () => {
     }
   };
 
+
+  const RegisterUser = (e) => {
+    e.preventDefault();
+    if(name&&email&&password){
+      axios.post(`${process.env.REACT_APP_API}register`, {
+        name,
+        email,
+        password
+      }).then((response) => {
+        if (response.status === 200) {
+          console.log('User registered successfully');
+          nav('/login');
+        } else {
+          alert('Registration failed');
+        }
+      }).catch((error) => {
+        alert('Error during registration:', error);
+        console.error('Error during registration:', error);
+      });
+    }
+    else{
+      alert("Please fill all the fields");
+    }
+  }
+
   return (
     <div className="auth-page">
       <div className="auth-container" ref={formRef}>
@@ -39,7 +69,7 @@ const Register = () => {
           <h2 ref={addToElementsRef}>Create Account</h2>
           <p ref={addToElementsRef}>Sign up to start tracking your finances</p>
         </div>
-        <form className="auth-form">
+        <form className="auth-form" onSubmit={RegisterUser}>
           <div className="form-group" ref={addToElementsRef}>
             <label htmlFor="name">Full Name</label>
             <input 
@@ -47,6 +77,7 @@ const Register = () => {
               id="name" 
               placeholder="Enter your full name" 
               required
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="form-group" ref={addToElementsRef}>
@@ -56,6 +87,7 @@ const Register = () => {
               id="email" 
               placeholder="Enter your email" 
               required
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="form-group" ref={addToElementsRef}>
@@ -65,6 +97,7 @@ const Register = () => {
               id="password" 
               placeholder="Create a password" 
               required
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="form-group" ref={addToElementsRef}>
@@ -74,6 +107,7 @@ const Register = () => {
               id="confirmPassword" 
               placeholder="Confirm your password" 
               required
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="form-action" ref={addToElementsRef}>

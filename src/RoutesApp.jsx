@@ -17,6 +17,9 @@ import DailyDressingTrends from './components/Dress/DailyDressingTrends'
 import { TiThMenu } from "react-icons/ti";
 import { IoClose } from "react-icons/io5";
 import {Routes, Route,useLocation} from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import NotFound from './components/NotFound/NotFound';
+import './App.css';
 function RoutesApp() {
     const [menu,setMenu]= useState(false);
     const handleMenuToggle = () => {
@@ -41,19 +44,23 @@ function RoutesApp() {
            {!hideLayout && <Sidebar menu={menu} />}
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/expenses" element={<ExpenseList />} />
+                <Route path="/expenses/add" element={<AddExpense />} />
+                <Route path="/expenses/edit/:id" element={<EditExpense />} />
+                <Route path="/budget" element={<BudgetManagement />} />
+                <Route path="/savings" element={<SavingsCalculation />} />
+                <Route path="/categories" element={<CategoriesManagement />} />
+                <Route path="/reports" element={<ReportsAnalytics />} />
+                <Route path="/tips-articles" element={<TipsAndArticles />} />
+                <Route path="/dressing-trends" element={<DailyDressingTrends />} />
+                <Route path='*' element={<NotFound/>} />
+              </Route>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/expenses" element={<ExpenseList />} />
-              <Route path="/expenses/add" element={<AddExpense />} />
-              <Route path="/expenses/edit/:id" element={<EditExpense />} />
-              <Route path="/budget" element={<BudgetManagement />} />
-              <Route path="/savings" element={<SavingsCalculation />} />
-              <Route path="/categories" element={<CategoriesManagement />} />
-              <Route path="/reports" element={<ReportsAnalytics />} />
-              <Route path="/tips-articles" element={<TipsAndArticles />} />
-              <Route path="/dressing-trends" element={<DailyDressingTrends />} />
+              
             </Routes>
           </main>
         </div>
