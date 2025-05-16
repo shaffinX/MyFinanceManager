@@ -33,29 +33,41 @@ export const Login = async (req, res) => {
     }
 };
 export const Register = async (req, res) => {
-    try{
-        const { name, email, password } = req.body;
-        const filePath = path.join('./user.png'); // your image path
-        const imageData = fs.readFileSync(filePath);
-        const contentType = 'image/png'; // or 'image/png' depending on the file
-        let passhash = await bcrypt.hash(password, 10);
-        const newUser = new User({
-            name:name,
-            email:email,
-            password:passhash,
-            avatar: {
-                data: imageData,
-                contentType: contentType
-            }
-        });
-        await newUser.save();
-        res.send("Registered Successfully").status(200);
+  try {
+    const { name, email, password } = req.body;
+
+    // 1. Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).send('User with this email already exists');
     }
-    catch(err){
-        console.log(err);
-        res.status(500).send("Internal Server Error");
-    }
-}
+
+    // 2. Hash password
+    const passhash = await bcrypt.hash(password, 10);
+
+    // 3. Read image
+    const filePath = path.join(process.cwd(), 'user.png'); // ensures absolute path
+    const imageData = fs.readFileSync(filePath);
+    const contentType = 'image/png';
+
+    // 4. Create and save user
+    const newUser = new User({
+      name,
+      email,
+      password: passhash,
+      avatar: {
+        data: imageData,
+        contentType: contentType
+      }
+    });
+
+    await newUser.save();
+    return res.status(200).send('Registered Successfully');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('Internal Server Error');
+  }
+};
 
 export const checkMe = async (req, res) => {
   const authHeader = req.headers['authorization'];
