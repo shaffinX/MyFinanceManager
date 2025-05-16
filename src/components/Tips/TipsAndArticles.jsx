@@ -41,27 +41,57 @@ const TipsAndArticles = () => {
     setArticles([
       {
         id: 1,
-        title: "5 Steps to Financial Freedom",
-        summary: "Learn how to achieve financial independence with these practical steps.",
-        source: "Finance Today",
-        imageUrl: "https://via.placeholder.com/100",
-        readTime: "5 min"
+        title: "Investing Money for Beginners",
+        summary: "Investing seems like a big commitment that requires a lot of money and knowledge, right? Wrong.",
+        source: "Go Banking",
+        imageUrl: "https://cdn.gobankingrates.com/wp-content/uploads/2023/08/investing-woman-iStock-538568372.jpg?w=675&quality=75&webp=1",
+        readTime: "7 min",
+        url:"https://www.gobankingrates.com/investing/strategy/investing-for-beginners/"
       },
       {
         id: 2,
-        title: "Investments for Beginners",
-        summary: "A comprehensive guide to starting your investment journey on the right foot.",
-        source: "Money Matters",
-        imageUrl: "https://via.placeholder.com/100",
-        readTime: "8 min"
+        title: "How to Invest Money in 2025: The Smart Beginner's Guide",
+        summary: "Explore diverse real estate investment avenues, including rental properties, flips, crowdfunding, and REITs, suitable for beginners.",
+        source: "FinanceBuzz",
+        imageUrl: "https://cdn.financebuzz.com/fit-in/1140x0/filters:quality(70)/images/2020/09/03/man-trading-stock-market.jpg",
+        readTime: "6 min",
+        url:"https://financebuzz.com/how-to-invest-money"
       },
       {
         id: 3,
-        title: "Emergency Fund Essentials",
-        summary: "Why everyone needs an emergency fund and how to build one quickly.",
-        source: "Smart Saver",
-        imageUrl: "https://via.placeholder.com/100",
-        readTime: "4 min"
+        title: "7 Investment Tips for Stock Market Beginners",
+        summary: "Essential tips for newcomers to the stock market, emphasizing diversification, ethical investing, and thorough research.",
+        source: "MoneyMagpie",
+        imageUrl: "https://www.moneymagpie.com/wp-content/uploads/2023/03/rsz_shutterstock_543073813.jpg.webp",
+        readTime: "5 min",
+        url:"https://www.moneymagpie.com/investment-articles/7-investment-tips-for-stock-market-beginners"
+      },
+      {
+        id: 4,
+        title: "7 Best Investments for Beginners in 2025",
+        summary: "A comprehensive look at beginner-friendly investments, including index fund ETFs and micro-investing platforms.",
+        source: "Invest1NOW",
+        imageUrl: "https://invest1now.com/wp-content/uploads/2024/06/image_2024-06-09_160924343.png",
+        readTime: "6 min",
+        url:"https://invest1now.com/2025/02/09/7-best-investments-for-beginners-in-2025/"
+      },
+      {
+        id: 5,
+        title: "The 10 Best Investments for Beginners in 2025",
+        summary: "An overview of top investment options for beginners, highlighting high-yield savings accounts, CDs, and mutual funds.",
+        source: "WallStreetZen",
+        imageUrl: "https://www.wallstreetzen.com/blog/wp-content/uploads/2024/03/pexels-cottonbro-studio-3943716-2000x1333.jpg",
+        readTime: "5 min",
+        url:"https://www.wallstreetzen.com/blog/best-investments-for-beginners/"
+      },
+      {
+        id: 6,
+        title: "11 best investments for beginners to become rich faster",
+        summary: "Digital currencies have many advantages, including eliminating third-party gatekeepers like banks, instant settlement transaction times, significantly lower transaction fees, and low-friction transfers to anywhere with an Internet connection. Those bitcoin benefits can be beneficial to almost any small business.",
+        source: "Tech Bullion",
+        imageUrl: "https://techbullion.com/wp-content/uploads/2022/07/best-investments.jpg",
+        readTime: "6 min",
+        url:"https://techbullion.com/11-best-investments-for-beginners-to-become-rich-faster/"
       }
     ]);
   }, []);
@@ -127,7 +157,9 @@ const TipsAndArticles = () => {
             {articles.map(article => (
               <div key={article.id} className="article-card">
                 <div className="article-image">
-                  <div className="image-placeholder"></div>
+                  <div className="image-placeholder">
+                    <img src={article.imageUrl} alt={article.title} />
+                  </div>
                 </div>
                 <div className="article-content">
                   <h3>{article.title}</h3>
@@ -136,7 +168,16 @@ const TipsAndArticles = () => {
                     <span>{article.source}</span>
                     <span>{article.readTime} read</span>
                   </div>
-                  <button className="read-more-btn">Read More</button>
+                  <button
+                    className="read-more-btn"
+                    onClick={() => {
+                      if (article.url) {
+                        window.open(article.url, '_blank', 'noopener,noreferrer');
+                      }
+                    }}
+                  >
+                    Read More
+                  </button>
                 </div>
               </div>
             ))}

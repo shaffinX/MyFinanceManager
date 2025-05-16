@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import anime from 'animejs/lib/anime.es.js';
 import './SavingsCalculation.css';
 import SavingsIntelligence from './SavingsIntelligence';
+/* eslint-disable react-hooks/exhaustive-deps */
+
 const SavingsCalculation = () => {
   const savingsGraphRef = useRef(null);
   const categoryChartRef = useRef(null);

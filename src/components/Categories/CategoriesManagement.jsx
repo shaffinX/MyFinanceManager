@@ -1,11 +1,17 @@
-// src/components/CategoriesManagement.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import anime from 'animejs/lib/anime.es.js';
 import './CategoriesManagement.css';
+import { getExpenses } from '../Expense/ExpenseHandle';
+/* eslint-disable react-hooks/exhaustive-deps */
 
 const CategoriesManagement = () => {
   const [activeTab, setActiveTab] = useState('default');
   const chartRef = useRef(null);
+  // eslint-disable-next-line no-unused-vars
+  const [expenseData, setExpenseData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [categoryData, setCategoryData] = useState([]);
 
   const defaultCategories = [
     { id: 1, name: 'Housing', color: '#FF6384', percentage: 30 },
@@ -24,9 +30,76 @@ const CategoriesManagement = () => {
     { id: 11, name: 'Coffee', color: '#5733FF', percentage: 2 }
   ];
 
+  // Category color mapping
+  const categoryColorMap = {
+    'food': '#36A2EB',
+    'transportation': '#FFCE56',
+    'entertainment': '#FF9F40',
+    'utilities': '#4BC0C0',
+    'shopping': '#C9CBCF',
+    'health': '#9966FF',
+    'housing': '#FF6384',
+    'education': '#33FF57',
+    'other': '#5733FF'
+  };
+
+  // Function to fetch expenses data
   useEffect(() => {
-    // Animate pie chart segments when component mounts
-    if (chartRef.current) {
+    if (activeTab === 'analysis') {
+      fetchExpenseData();
+    }
+  }, [activeTab]);
+
+  const fetchExpenseData = async () => {
+    setLoading(true);
+    try {
+      const data = await getExpenses();
+      setExpenseData(data);
+      processExpenseData(data);
+    } catch (error) {
+      console.error("Error fetching expense data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Process expense data to get category percentages
+  const processExpenseData = (data) => {
+    if (!data || data.length === 0) return;
+    
+    // Calculate total expense amount
+    const total = data.reduce((sum, expense) => sum + Number(expense.amount), 0);
+    setTotalExpense(total);
+    
+    // Group expenses by category
+    const categoryTotals = data.reduce((acc, expense) => {
+      const category = expense.category || 'other';
+      acc[category] = (acc[category] || 0) + Number(expense.amount);
+      return acc;
+    }, {});
+    
+    // Calculate percentages and create category data objects
+    const categories = Object.keys(categoryTotals).map((category, index) => {
+      const amount = categoryTotals[category];
+      const percentage = parseFloat(((amount / total) * 100).toFixed(1));
+      
+      return {
+        id: index + 1,
+        name: category.charAt(0).toUpperCase() + category.slice(1), // Capitalize first letter
+        color: categoryColorMap[category] || `hsl(${index * 30}, 70%, 50%)`,
+        percentage,
+        amount
+      };
+    });
+    
+    // Sort categories by percentage (descending)
+    categories.sort((a, b) => b.percentage - a.percentage);
+    setCategoryData(categories);
+  };
+
+  useEffect(() => {
+    // Animate pie chart segments when component mounts or when category data changes    
+    if (chartRef.current && activeTab === 'analysis') {
       anime({
         targets: '.pie-segment',
         strokeDashoffset: [anime.setDashoffset, 0],
@@ -38,7 +111,7 @@ const CategoriesManagement = () => {
       });
 
       anime({
-        targets: '.category-item',
+        targets: '.category-item, .legend-item',
         translateX: [50, 0],
         opacity: [0, 1],
         easing: 'easeOutExpo',
@@ -46,10 +119,12 @@ const CategoriesManagement = () => {
         delay: anime.stagger(100)
       });
     }
-  }, [activeTab]);
+  }, [activeTab, categoryData]);
 
   // Function to create pie chart paths
   const createPieSegments = (categories) => {
+    if (!categories || categories.length === 0) return [];
+    
     const segments = [];
     let startAngle = 0;
     
@@ -57,7 +132,7 @@ const CategoriesManagement = () => {
       const angleValue = (category.percentage / 100) * 360;
       const endAngle = startAngle + angleValue;
       
-      // Calculate segment path (simplified version)
+      // Calculate segment path
       const startRadians = (startAngle - 90) * Math.PI / 180;
       const endRadians = (endAngle - 90) * Math.PI / 180;
       
@@ -85,6 +160,34 @@ const CategoriesManagement = () => {
     });
     
     return segments;
+  };
+
+  // Find top spending categories
+  const getTopSpendingCategories = () => {
+    return categoryData.slice(0, 3);
+  };
+
+  // Calculate category growth (this is a placeholder since we don't have historical data)
+  // In a real implementation, you would compare current month data to previous month
+  const getCategoryGrowth = () => {
+    // For demo purposes, we'll create some mock growth data
+    // In a real app, you would compare with previous period data
+    const mockGrowthData = [
+      { category: categoryData[0]?.name || 'Entertainment', growth: 2.5, direction: 'increase' },
+      { category: categoryData[1]?.name || 'Utilities', growth: -1.2, direction: 'decrease' },
+      { category: categoryData[2]?.name || 'Groceries', growth: 0.8, direction: 'increase' }
+    ];
+    
+    return mockGrowthData;
+  };
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'pkr',
+      minimumFractionDigits: 0
+    }).format(amount);
   };
 
   return (
@@ -189,80 +292,67 @@ const CategoriesManagement = () => {
         
         {activeTab === 'analysis' && (
           <div className="expense-distribution">
-            <div className="distribution-chart" ref={chartRef}>
-              <div className="pie-chart-container">
-                <svg width="200" height="200" viewBox="0 0 200 200">
-                  {createPieSegments(defaultCategories.concat(customCategories))}
-                </svg>
-                <div className="chart-center">
-                  <span>Total</span>
-                  <span className="big-text">$4,250</span>
-                </div>
-              </div>
-              
-              <div className="chart-legend">
-                {defaultCategories.concat(customCategories).map(category => (
-                  <div key={category.id} className="legend-item">
-                    <div className="legend-color" style={{ backgroundColor: category.color }}></div>
-                    <div className="legend-name">{category.name}</div>
-                    <div className="legend-percentage">{category.percentage}%</div>
+            {loading ? (
+              <div className="loading-spinner">Loading expense data...</div>
+            ) : (
+              <>
+                <div className="distribution-chart" ref={chartRef}>
+                  <div className="pie-chart-container">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                      {createPieSegments(categoryData.length > 0 ? categoryData : defaultCategories.concat(customCategories))}
+                    </svg>
+                    <div className="chart-center">
+                      <span>Total</span>
+                      <span className="big-text">{formatCurrency(totalExpense)}</span>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-            
-            <div className="distribution-insights">
-              <div className="insight-card">
-                <h3>Top Spending Categories</h3>
-                <ol className="insights-list">
-                  <li>
-                    <span className="category-name">Housing</span>
-                    <span className="percentage-value">30%</span>
-                  </li>
-                  <li>
-                    <span className="category-name">Food</span>
-                    <span className="percentage-value">15%</span>
-                  </li>
-                  <li>
-                    <span className="category-name">Transportation</span>
-                    <span className="percentage-value">10%</span>
-                  </li>
-                </ol>
-              </div>
-              
-              <div className="insight-card">
-                <h3>Category Growth</h3>
-                <div className="growth-item">
-                  <div className="growth-info">
-                    <span className="category-name">Entertainment</span>
-                    <span className="growth-value increase">+2.5%</span>
-                  </div>
-                  <div className="growth-bar">
-                    <div className="growth-progress increase" style={{ width: '65%' }}></div>
+                  
+                  <div className="chart-legend">
+                    {(categoryData.length > 0 ? categoryData : defaultCategories.concat(customCategories)).map(category => (
+                      <div key={category.id} className="legend-item">
+                        <div className="legend-color" style={{ backgroundColor: category.color }}></div>
+                        <div className="legend-name">{category.name}</div>
+                        <div className="legend-percentage">{category.percentage}%</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 
-                <div className="growth-item">
-                  <div className="growth-info">
-                    <span className="category-name">Utilities</span>
-                    <span className="growth-value decrease">-1.2%</span>
+                <div className="distribution-insights">
+                  <div className="insight-card">
+                    <h3>Top Spending Categories</h3>
+                    <ol className="insights-list">
+                      {getTopSpendingCategories().map((category, index) => (
+                        <li key={index}>
+                          <span className="category-name">{category.name}</span>
+                          <span className="percentage-value">{category.percentage}%</span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                  <div className="growth-bar">
-                    <div className="growth-progress decrease" style={{ width: '40%' }}></div>
+                  
+                  <div className="insight-card">
+                    <h3>Category Growth</h3>
+                    {getCategoryGrowth().map((item, index) => (
+                      <div key={index} className="growth-item">
+                        <div className="growth-info">
+                          <span className="category-name">{item.category}</span>
+                          <span className={`growth-value ${item.direction}`}>
+                            {item.growth > 0 ? '+' : ''}{item.growth}%
+                          </span>
+                        </div>
+                        <div className="growth-bar">
+                          <div 
+                            className={`growth-progress ${item.direction}`} 
+                            style={{ width: `${Math.abs(item.growth) * 10}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                
-                <div className="growth-item">
-                  <div className="growth-info">
-                    <span className="category-name">Groceries</span>
-                    <span className="growth-value increase">+0.8%</span>
-                  </div>
-                  <div className="growth-bar">
-                    <div className="growth-progress increase" style={{ width: '25%' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         )}
       </div>

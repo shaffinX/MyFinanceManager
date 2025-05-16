@@ -6,7 +6,6 @@ import {
   RiMoneyDollarCircleLine,
   RiUser3Line,
   RiLogoutBoxLine,
-  RiSettings4Line,
   RiAddCircleLine,
   RiArchiveDrawerLine
 } from 'react-icons/ri';
@@ -16,7 +15,6 @@ import './Sidebar.css';
 import { MdOutlineCategory, MdOutlineTipsAndUpdates } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import MediaQuery from 'react-responsive';
-import { TiThMenu } from "react-icons/ti";
 import Cookies from 'js-cookie';
 
 const Sidebar = ({menu}) => {

@@ -53,7 +53,7 @@ const Register = () => {
           alert('Registration failed');
         }
       }).catch((error) => {
-        alert('Error during registration:', error);
+        alert(error.response.data);
         console.error('Error during registration:', error);
       });
     }

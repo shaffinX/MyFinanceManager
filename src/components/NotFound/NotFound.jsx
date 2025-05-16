@@ -1,7 +1,7 @@
 // pages/NotFound.jsx
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FiHome, FiAlertCircle, FiArrowLeft, FiSearch } from 'react-icons/fi';
+import { FiHome, FiArrowLeft, FiSearch } from 'react-icons/fi';
 import anime from 'animejs/lib/anime.es.js';
 import './NotFound.css';
 

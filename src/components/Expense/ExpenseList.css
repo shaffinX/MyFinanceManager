@@ -1,10 +1,12 @@
 /* pages/ExpenseList.css */
 .expense-list-page {
   padding: 1rem 0;
+  overflow-x: auto;
 }
 
 .expense-filters {
   margin-bottom: 1.5rem;
+  max-width: 100%;
 }
 
 .filter-row {

@@ -1,19 +1,117 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import anime from 'animejs/lib/anime.es.js';
 import './BudgetManagement.css';
+import { AddBudget,GetBudgets,getExpenses,deleteBudget, updateBudget } from './BudgetHandler';
+import Chart from './Chart';
+/* eslint-disable react-hooks/exhaustive-deps */
+
 
 const BudgetManagement = () => {
   const [budgetType, setBudgetType] = useState('month');
-  const [budgets, setBudgets] = useState([
-    { id: 1, category: 'Food', amount: 5000, period: 'month' },
-    { id: 2, category: 'Transportation', amount: 2000, period: 'month' },
-    { id: 3, category: 'Entertainment', amount: 1500, period: 'month' },
-    { id: 4, category: 'Utilities', amount: 3000, period: 'month' },
-  ]);
+  const [budgets, setBudgets] = useState([]);
+  const [expenses, setExpenses] = useState([]);
 
+  const [category, setCategory] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [period, setPeriod] = useState('month');
+  
+  // New state for edit modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [editBudget, setEditBudget] = useState(null);
+  const [editCategory, setEditCategory] = useState('');
+  const [editAmount, setEditAmount] = useState(0);
+  const [editPeriod, setEditPeriod] = useState('month');
+  const [editID, setEditID] = useState('');
+
+  const handleDeleteBudget = (id) => {
+    if (window.confirm('Are you sure you want to delete this budget?')) {
+      deleteBudget(id)
+        .then((response) => {
+          if (response) {
+            alert('Budget deleted successfully');
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting budget:', error);
+        });
+    }
+  }
+  
+  // New function to open edit modal
+  const openEditModal = (budget) => {
+    setEditBudget(budget);
+    setEditCategory(budget.category);
+    setEditAmount(budget.amount);
+    setEditPeriod(budget.period);
+    setIsEditModalOpen(true);
+    setEditID(budget._id);
+  }
+  
+  // New function to close edit modal
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditBudget(null);
+  }
+  
+  // New function to handle edit budget (left empty as requested)
+  const handleEditBudget = async(e) => {
+    e.preventDefault();
+    if (editCategory && editAmount && editPeriod) {
+      const response = await updateBudget(editID, editCategory, editAmount, editPeriod);
+      if (response) {
+        alert('Budget updated successfully');
+        window.location.reload();
+      } else {
+        alert('Error updating budget');
+      }
+    } else {
+      alert('Please fill all the fields');
+    }
+  }
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await getExpenses();
+      if (response) {
+        console.log(response);
+        setExpenses(response);
+      } else {
+        alert('No expenses found');
+      }
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+    }
+  }
+
+  const fetchBudgets = async () => {
+    try {
+      const response = await GetBudgets();
+      if (response) {
+        console.log(response);
+        setBudgets(response);
+      } else {
+        alert('No budgets found');
+      }
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
+    }
+  }
+  useEffect(() => {
+     fetchBudgets();
+     fetchExpenses();
+     console.log(budgets);
+     console.log("-----------");
+     
+     console.log(expenses);
+     
+     
+  }, []);
   // Animation references
   const animateBudgetBar = (index) => {
+    
     anime({
       targets: `.budget-bar-fill-${index}`,
       width: ['0%', '100%'],
@@ -24,10 +122,33 @@ const BudgetManagement = () => {
   };
 
   React.useEffect(() => {
+   
     budgets.forEach((_, index) => {
       animateBudgetBar(index);
     });
   }, [budgetType, budgets]);
+
+
+  const handleAddBudget = (e) => {
+    e.preventDefault();
+    console.log("hhh");
+    
+    if(category&&amount&&period){
+      AddBudget(category, amount, period)
+        .then((response) => {
+          if (response) {
+            alert('Budget added successfully');
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding budget:', error);
+        });
+    }
+    else{
+      alert('Please fill all the fields');
+    }
+  }
 
   return (
     <div className="budget-management-container">
@@ -69,24 +190,40 @@ const BudgetManagement = () => {
         transition={{ duration: 0.5 }}
       >
         <h2>Add New Budget</h2>
-        <form className="budget-form">
+        <form className="budget-form" onSubmit={handleAddBudget}>
           <div className="form-group">
             <label>Category</label>
-            <input type="text" placeholder="e.g., Food, Transportation" />
+            <select
+                  id="category"
+                  required
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="">Select a category</option>
+                  <option value="food">Food</option>
+                  <option value="transportation">Transportation</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="shopping">Shopping</option>
+                  <option value="health">Health</option>
+                  <option value="housing">Housing</option>
+                  <option value="education">Education</option>
+                  <option value="other">Other</option>
+                </select>
           </div>
           <div className="form-group">
             <label>Amount</label>
-            <input type="number" placeholder="Enter amount" />
+            <input type="number" placeholder="Enter amount" onChange={(e)=>{setAmount(e.target.value)}} value={amount}/>
           </div>
           <div className="form-group">
             <label>Period</label>
-            <select>
+            <select onChange={(e) => setPeriod(e.target.value)} value={period}>
               <option value="day">Daily</option>
               <option value="week">Weekly</option>
               <option value="month">Monthly</option>
             </select>
           </div>
-          <button type="button" className="add-budget-btn">Add Budget</button>
+          <button type="submit" className="add-budget-btn">Add Budget</button>
         </form>
       </motion.div>
 
@@ -112,11 +249,11 @@ const BudgetManagement = () => {
                 <div className="budget-item-header">
                   <h3>{budget.category}</h3>
                   <div className="budget-actions">
-                    <button className="edit-btn">Edit</button>
-                    <button className="delete-btn">Delete</button>
+                    <button className="edit-btn" onClick={() => openEditModal(budget)}>Edit</button>
+                    <button className="delete-btn" onClick={()=>{handleDeleteBudget(budget._id)}}>Delete</button>
                   </div>
                 </div>
-                <div className="budget-amount">₹{budget.amount.toLocaleString()}</div>
+                <div className="budget-amount">Rs.{budget.amount.toLocaleString()}</div>
                 <div className="budget-progress">
                   <div className="budget-bar">
                     <div className={`budget-bar-fill budget-bar-fill-${index}`} style={{ width: '0%' }}></div>
@@ -137,34 +274,68 @@ const BudgetManagement = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <h2>Budget vs. Expenses</h2>
-        <div className="comparison-chart">
-          {/* Chart will be populated with actual data */}
-          <div className="chart-placeholder">
-            <div className="chart-legend">
-              <div className="legend-item">
-                <div className="legend-color budget-color"></div>
-                <span>Budget</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-color expense-color"></div>
-                <span>Expense</span>
-              </div>
+       <Chart budget={budgets} expenses={expenses} />
+      </motion.div>
+      
+      {/* Edit Budget Modal */}
+      {isEditModalOpen && (
+        <div className="edit-modal-overlay">
+          <div className="edit-modal">
+            <div className="edit-modal-header">
+              <h2>Edit Budget</h2>
+              <button className="close-modal-btn" onClick={closeEditModal}>×</button>
             </div>
-            <div className="chart-bars">
-              {['Food', 'Transportation', 'Entertainment', 'Utilities'].map((category, index) => (
-                <div key={category} className="chart-bar-group">
-                  <div className="chart-label">{category}</div>
-                  <div className="chart-bar-container">
-                    <div className={`chart-bar budget-bar-graph budget-bar-${index}`}></div>
-                    <div className={`chart-bar expense-bar-graph expense-bar-${index}`} style={{height: `${30 + Math.random() * 50}%`}}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <form className="edit-budget-form" onSubmit={handleEditBudget}>
+              <div className="form-group">
+                <label>Category</label>
+                <select
+                  id="edit-category"
+                  required
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                >
+                  <option value="">Select a category</option>
+                  <option value="food">Food</option>
+                  <option value="transportation">Transportation</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="shopping">Shopping</option>
+                  <option value="health">Health</option>
+                  <option value="housing">Housing</option>
+                  <option value="education">Education</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Amount</label>
+                <input 
+                  type="number" 
+                  placeholder="Enter amount" 
+                  onChange={(e) => setEditAmount(e.target.value)} 
+                  value={editAmount}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Period</label>
+                <select 
+                  onChange={(e) => setEditPeriod(e.target.value)} 
+                  value={editPeriod}
+                  required
+                >
+                  <option value="day">Daily</option>
+                  <option value="week">Weekly</option>
+                  <option value="month">Monthly</option>
+                </select>
+              </div>
+              <div className="edit-modal-actions">
+                <button type="button" className="cancel-btn" onClick={closeEditModal}>Cancel</button>
+                <button type="submit" className="save-btn">Save Changes</button>
+              </div>
+            </form>
           </div>
         </div>
-      </motion.div>
+      )}
     </div>
   );
 };

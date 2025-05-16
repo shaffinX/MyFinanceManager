@@ -1,10 +1,12 @@
 // pages/Login.jsx
-import React, { useEffect, useRef,useState } from 'react';
+import { useEffect, useRef,useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import anime from 'animejs/lib/anime.es.js';
 import './Auth.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+
+/* eslint-disable react-hooks/exhaustive-deps */
 
 const Login = () => {
   const formRef = useRef(null);
@@ -32,6 +34,8 @@ const Login = () => {
       delay: anime.stagger(100, {start: 300}),
       easing: 'easeOutExpo'
     });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   const addToElementsRef = (el) => {
