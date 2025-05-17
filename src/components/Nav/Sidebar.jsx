@@ -56,7 +56,7 @@ const Sidebar = ({menu}) => {
       <MediaQuery minWidth={769}>
         <div className="sidebar" ref={sidebarRef}>
           <div className="sidebar-header">
-            <h3>FinanceTrack</h3>
+            <h3>CapitalCore</h3>
           </div>
           <div className="sidebar-menu">
             <Link to="/" className="menu-item" ref={addToLinksRef}>

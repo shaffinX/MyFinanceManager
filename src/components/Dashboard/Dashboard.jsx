@@ -1,15 +1,30 @@
 // pages/Dashboard.jsx
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPlus, FiDollarSign, FiCreditCard, FiPieChart, FiTrendingUp, FiTrendingDown } from 'react-icons/fi';
+import { FiPlus, FiDollarSign, FiCreditCard, FiPieChart } from 'react-icons/fi';
 import anime from 'animejs/lib/anime.es.js';
 import './Dashboard.css';
-
+import { SBE } from '../../SBE'; // Import the SBE context
+import {getExpenses} from '../Expense/ExpenseHandle'; // Import the getExpenses function
+import ExpenseNotifications from './ExpenseNotifications';
 const Dashboard = () => {
   const cardRefs = useRef([]);
   const chartRef = useRef(null);
+  const [expenses, setExpenses] = React.useState([]);
+
+  const {sbe} = React.useContext(SBE);
+
+  const fetchExpenses = async () => {
+    try {
+      setExpenses(await getExpenses());      
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  }
+  
 
   useEffect(() => {
+    fetchExpenses();
     // Animate cards
     anime({
       targets: cardRefs.current,
@@ -58,6 +73,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      <ExpenseNotifications expenses={expenses} />
       <div className="dashboard-header">
         <h1>Dashboard</h1>
         <Link to="/expenses/add" className="btn btn-primary">
@@ -72,9 +88,8 @@ const Dashboard = () => {
           </div>
           <div className="stat-info">
             <h3>Total Balance</h3>
-            <p className="stat-value">$2,450</p>
+            <p className="stat-value">Rs.{sbe.tb}</p>
             <p className="stat-trend positive">
-              <FiTrendingUp /> 8.2% from last month
             </p>
           </div>
         </div>
@@ -85,9 +100,8 @@ const Dashboard = () => {
           </div>
           <div className="stat-info">
             <h3>Total Expenses</h3>
-            <p className="stat-value">$1,850</p>
+            <p className="stat-value">Rs.{sbe.te}</p>
             <p className="stat-trend negative">
-              <FiTrendingDown /> 2.5% from last month
             </p>
           </div>
         </div>
@@ -98,9 +112,8 @@ const Dashboard = () => {
           </div>
           <div className="stat-info">
             <h3>Total Savings</h3>
-            <p className="stat-value">$600</p>
+            <p className="stat-value">Rs.{sbe.s}</p>
             <p className="stat-trend positive">
-              <FiTrendingUp /> 12.3% from last month
             </p>
           </div>
         </div>

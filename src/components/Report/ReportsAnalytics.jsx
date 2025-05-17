@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import anime from 'animejs/lib/anime.es.js';
 import './ReportsAnalytics.css';
+import { getExpenses, GetBudgets,getSavingsYear } from './ReportHandler';
+import generateReport from './ReportGenerator';
 
 const ReportsAnalytics = () => {
   const [reportPeriod, setReportPeriod] = useState('monthly');
@@ -9,7 +11,28 @@ const ReportsAnalytics = () => {
   const barChartRef = useRef(null);
   const lineChartRef = useRef(null);
 
+  const [pdfCheck, setPdfCheck] = useState(true);
+  const [excelCheck, setExcelCheck] = useState(false);
+  const [csvCheck, setCsvCheck] = useState(false);
+
+  const [type, setType] = useState('expense');
+  const [dateRange, setDateRange] = useState('month');
+
+  const [budgets, setBudgets] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [savings, setSavings] = useState([]);
+  
+  
+  const FetchData = async () => {
+    setBudgets(await GetBudgets());
+    setExpenses(await getExpenses());
+    setSavings(await getSavingsYear());
+  }
+
   useEffect(() => {
+    FetchData()
+    console.log(budgets,expenses,savings);
+    
     // Animate bar chart when component mounts or options change
     if (barChartRef.current) {
       anime({
@@ -39,7 +62,13 @@ const ReportsAnalytics = () => {
         easing: 'easeOutElastic(1, .5)'
       });
     }
+    // eslint-disable-next-line 
   }, [reportPeriod, reportType]);
+
+
+  const HandleGenerate=()=>{
+    generateReport(pdfCheck, excelCheck, csvCheck, type, dateRange, savings, budgets, expenses);
+  }
 
   return (
     <div className="reports-analytics-container">
@@ -51,19 +80,19 @@ const ReportsAnalytics = () => {
             className={`period-btn ${reportPeriod === 'weekly' ? 'active' : ''}`}
             onClick={() => setReportPeriod('weekly')}
           >
-            Weekly
+            Daily
           </button>
           <button 
             className={`period-btn ${reportPeriod === 'monthly' ? 'active' : ''}`}
             onClick={() => setReportPeriod('monthly')}
           >
-            Monthly
+            Weekly
           </button>
           <button 
             className={`period-btn ${reportPeriod === 'yearly' ? 'active' : ''}`}
             onClick={() => setReportPeriod('yearly')}
           >
-            Yearly
+            Monthly
           </button>
         </div>
         
@@ -95,7 +124,7 @@ const ReportsAnalytics = () => {
             <h3>Total {reportType === 'expense' ? 'Expenses' : reportType === 'income' ? 'Income' : 'Savings'}</h3>
           </div>
           <div className="card-body">
-            <div className="big-number">${reportType === 'expense' ? '2,450' : reportType === 'income' ? '4,200' : '1,750'}</div>
+            <div className="big-number">Rs.{reportType === 'expense' ? '2,450' : reportType === 'income' ? '4,200' : '1,750'}</div>
             <div className={`change ${reportType === 'expense' ? 'negative' : 'positive'}`}>
               {reportType === 'expense' ? '+12%' : '+8%'} from last {reportPeriod === 'weekly' ? 'week' : reportPeriod === 'monthly' ? 'month' : 'year'}
             </div>
@@ -107,7 +136,7 @@ const ReportsAnalytics = () => {
             <h3>Average Per {reportPeriod === 'weekly' ? 'Day' : reportPeriod === 'monthly' ? 'Week' : 'Month'}</h3>
           </div>
           <div className="card-body">
-            <div className="big-number">${reportType === 'expense' ? '81' : reportType === 'income' ? '140' : '58'}</div>
+            <div className="big-number">Rs.{reportType === 'expense' ? '81' : reportType === 'income' ? '140' : '58'}</div>
             <div className="change neutral">based on {reportPeriod} data</div>
           </div>
         </div>
@@ -121,7 +150,7 @@ const ReportsAnalytics = () => {
               {reportType === 'expense' ? 'Housing' : reportType === 'income' ? 'Salary' : 'Investments'}
             </div>
             <div className="change">
-              ${reportType === 'expense' ? '735' : reportType === 'income' ? '3,500' : '875'}
+              Rs.{reportType === 'expense' ? '735' : reportType === 'income' ? '3,500' : '875'}
             </div>
           </div>
         </div>
@@ -350,60 +379,44 @@ const ReportsAnalytics = () => {
         <h2>Generate Custom Report</h2>
         <div className="custom-report-form">
           <div className="form-row">
-            <div className="form-group">
+            <div className="form-group" >
               <label>Report Type</label>
-              <select>
-                <option>Expense Report</option>
-                <option>Income Report</option>
-                <option>Savings Report</option>
-                <option>Budget Comparison</option>
-                <option>Category Analysis</option>
+              <select onChange={(e) => setType(e.target.value)}>
+                <option value={"expense"}>Expense Report</option>
+                <option value={"savings"}>Savings Report</option>
+                <option value={"budget"}>Budget Report</option>
               </select>
             </div>
             
             <div className="form-group">
               <label>Date Range</label>
-              <select>
-                <option>Current Month</option>
-                <option>Previous Month</option>
-                <option>Current Quarter</option>
-                <option>Year to Date</option>
-                <option>Custom Range</option>
+              <select onChange={(e) => setDateRange(e.target.value)}>
+                <option value={"month"}>Month</option>
+                <option value={"week"}>Week</option>
+                <option value={"year"}>Year</option>
               </select>
             </div>
           </div>
           
           <div className="form-row">
-            <div className="form-group">
-              <label>Categories to Include</label>
-              <select multiple>
-                <option>All Categories</option>
-                <option>Housing</option>
-                <option>Food</option>
-                <option>Transportation</option>
-                <option>Utilities</option>
-                <option>Entertainment</option>
-                <option>Shopping</option>
-              </select>
-            </div>
             
             <div className="form-group">
               <label>Report Format</label>
               <div className="format-options">
                 <label>
-                  <input type="radio" name="format" checked /> PDF
+                  <input type="radio" name="format"value={pdfCheck} onClick={()=>{setCsvCheck(false);setExcelCheck(false);setPdfCheck(true)}}/> PDF
                 </label>
                 <label>
-                  <input type="radio" name="format" /> Excel
+                  <input type="radio" name="format" value={excelCheck} onClick={()=>{setCsvCheck(false);setExcelCheck(true);setPdfCheck(false)}}/> Excel
                 </label>
                 <label>
-                  <input type="radio" name="format" /> CSV
+                  <input type="radio" name="format" value={csvCheck} onClick={()=>{setCsvCheck(true);setExcelCheck(false);setPdfCheck(false)}} /> CSV
                 </label>
               </div>
             </div>
           </div>
           
-          <button className="generate-report-btn">Generate Report</button>
+          <button className="generate-report-btn" onClick={HandleGenerate}>Generate Report</button>
         </div>
       </div>
     </div>
